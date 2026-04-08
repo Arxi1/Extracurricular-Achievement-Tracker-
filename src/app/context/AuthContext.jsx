@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
-import { mockUsers } from '../data/mockData';
 
 const AuthContext = createContext(undefined);
+
+const API_BASE_URL = 'http://localhost:8080/api/users';
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
@@ -14,16 +15,39 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    const login = (email, password) => {
-        // Mock authentication - in real app, this would call an API
-        const foundUser = mockUsers.find(u => u.email === email);
-
-        if (foundUser) {
-            // For demo purposes, any password works
-            setUser(foundUser);
-            return true;
+    const login = async (email, password) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            if (res.ok) {
+                const userData = await res.json();
+                setUser(userData);
+                return true;
+            }
+        } catch (err) {
+            console.error('Login failed', err);
         }
+        return false;
+    };
 
+    const register = async (userData) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
+            if (res.ok) {
+                const newUser = await res.json();
+                setUser(newUser);
+                return true;
+            }
+        } catch (err) {
+            console.error('Registration failed', err);
+        }
         return false;
     };
 
@@ -35,6 +59,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{
             user,
             login,
+            register,
             logout,
             isAuthenticated: !!user
         }}>

@@ -8,15 +8,21 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
 import { Award, AlertCircle, Sparkles, ShieldCheck, GraduationCap } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { DEPARTMENTS } from '../types';
 
 export default function Login() {
+    const [isRegistering, setIsRegistering] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
+    const [rollNumber, setRollNumber] = useState('');
+    const [department, setDepartment] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, register } = useAuth();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -25,16 +31,27 @@ export default function Login() {
             return;
         }
 
-        const success = login(email, password);
+        let success = false;
+
+        if (isRegistering) {
+            if (!name || !rollNumber || !department) {
+                setError('Please fill in all registration fields');
+                return;
+            }
+            success = await register({ email, password, name, rollNumber, department, role: 'student' });
+        } else {
+            success = await login(email, password);
+        }
 
         if (success) {
             navigate('/dashboard');
         } else {
-            setError('Invalid credentials. Please try again.');
+            setError(isRegistering ? 'Registration failed. That email might already be taken.' : 'Invalid credentials. Please try again.');
         }
     };
 
     const fillDemoCredentials = (role) => {
+        setIsRegistering(false);
         if (role === 'admin') {
             setEmail('admin@achievetrack.com');
             setPassword('admin123');
@@ -74,51 +91,38 @@ export default function Login() {
                             Track, showcase, and celebrate every milestone in your academic career.
                         </p>
                     </motion.div>
-
-                    <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="grid grid-cols-2 gap-4 mt-12"
-                    >
-                        {[
-                            { icon: Sparkles, label: 'Achievements' },
-                            { icon: ShieldCheck, label: 'Verified' },
-                            { icon: GraduationCap, label: 'Milestones' },
-                            { icon: Award, label: 'Excellence' }
-                        ].map((item, i) => (
-                            <div key={i} className="flex flex-col items-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                                <item.icon className="w-6 h-6 mb-2 opacity-80" />
-                                <span className="text-sm font-medium opacity-90">{item.label}</span>
-                            </div>
-                        ))}
-                    </motion.div>
                 </div>
             </div>
 
             {/* Form Section */}
-            <div className="flex items-center justify-center p-6 bg-slate-50 relative">
+            <div className="flex items-center justify-center p-6 bg-slate-50 relative overflow-y-auto">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 lg:hidden" />
 
                 <motion.div
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.6 }}
-                    className="w-full max-w-md space-y-8"
+                    className="w-full max-w-md space-y-8 py-10"
                 >
-                    <div className="lg:hidden text-center mb-12">
+                    <div className="lg:hidden text-center mb-6">
                         <Award className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
                         <h2 className="text-3xl font-bold text-slate-900 font-heading">AchieveTrack</h2>
                     </div>
 
                     <div className="space-y-2 text-center lg:text-left">
-                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 font-heading">Welcome Back</h1>
-                        <p className="text-slate-500">Enter your credentials to access your dashboard</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 font-heading">
+                            {isRegistering ? 'Create your Account' : 'Welcome Back'}
+                        </h1>
+                        <p className="text-slate-500 font-medium">
+                            {isRegistering ? 'Start tracking your academic and extracurricular journey' : 'Enter your credentials to access your dashboard'}
+                        </p>
                     </div>
 
                     <Card className="border-none shadow-2xl shadow-indigo-100 bg-white p-2">
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-lg font-semibold text-slate-800">Sign In</CardTitle>
+                            <CardTitle className="text-lg font-semibold text-slate-800">
+                                {isRegistering ? 'Sign Up' : 'Sign In'}
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-5">
@@ -128,6 +132,46 @@ export default function Login() {
                                             <AlertCircle className="h-4 w-4" />
                                             <AlertDescription>{error}</AlertDescription>
                                         </Alert>
+                                    </motion.div>
+                                )}
+
+                                {isRegistering && (
+                                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                                        <div className="space-y-3">
+                                            <Label htmlFor="name" className="text-sm font-semibold text-slate-700">Full Name</Label>
+                                            <Input
+                                                id="name"
+                                                placeholder="Student Name"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                className="h-12 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-3">
+                                                <Label htmlFor="rollNumber" className="text-sm font-semibold text-slate-700">Roll/ID Number</Label>
+                                                <Input
+                                                    id="rollNumber"
+                                                    placeholder="CS2021001"
+                                                    value={rollNumber}
+                                                    onChange={(e) => setRollNumber(e.target.value)}
+                                                    className="h-12 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all"
+                                                />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <Label className="text-sm font-semibold text-slate-700">Department</Label>
+                                                <Select value={department} onValueChange={setDepartment}>
+                                                    <SelectTrigger className="h-12 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all bg-white font-medium">
+                                                        <SelectValue placeholder="Branch" />
+                                                    </SelectTrigger>
+                                                    <SelectContent className="border-none shadow-2xl rounded-xl">
+                                                        {DEPARTMENTS?.map(dept => (
+                                                            <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </div>
                                     </motion.div>
                                 )}
 
@@ -146,7 +190,7 @@ export default function Login() {
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="password" className="text-sm font-semibold text-slate-700">Password</Label>
-                                        <a href="#" className="text-xs font-semibold text-indigo-600 hover:text-indigo-500">Forgot?</a>
+                                        {!isRegistering && <a href="#" className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">Forgot?</a>}
                                     </div>
                                     <Input
                                         id="password"
@@ -158,43 +202,32 @@ export default function Login() {
                                     />
                                 </div>
 
-                                <Button type="submit" className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-xl transition-all shadow-lg shadow-indigo-200">
-                                    Continue
+                                <Button type="submit" className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-xl transition-all shadow-lg shadow-indigo-200 hover:scale-[1.01] active:scale-[0.99]">
+                                    {isRegistering ? 'Complete Registration' : 'Continue to Dashboard'}
                                 </Button>
 
-                                <div className="relative py-4">
-                                    <div className="absolute inset-0 flex items-center">
-                                        <span className="w-full border-t border-slate-200" />
-                                    </div>
-                                    <div className="relative flex justify-center text-xs uppercase">
-                                        <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider">Demo Access</span>
-                                    </div>
-                                </div>
+                                {!isRegistering && (
+                                    <>
+                                        <div className="relative py-2">
+                                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div>
+                                            <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 font-bold tracking-wider">Demo Access</span></div>
+                                        </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="h-11 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all font-semibold"
-                                        onClick={() => fillDemoCredentials('student')}
-                                    >
-                                        Student
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="h-11 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all font-semibold"
-                                        onClick={() => fillDemoCredentials('admin')}
-                                    >
-                                        Admin
-                                    </Button>
-                                </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <Button type="button" variant="outline" className="h-11 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all font-bold" onClick={() => fillDemoCredentials('student')}>Student Demo</Button>
+                                            <Button type="button" variant="outline" className="h-11 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all font-bold" onClick={() => fillDemoCredentials('admin')}>Admin Demo</Button>
+                                        </div>
+                                    </>
+                                )}
                             </form>
                         </CardContent>
                     </Card>
 
-                    <p className="text-center text-sm text-slate-400 font-medium">
-                        Don't have an account? <a href="#" className="text-indigo-600 font-bold hover:underline">Contact Administrator</a>
+                    <p className="text-center text-sm text-slate-500 font-medium">
+                        {isRegistering ? "Already have an account?" : "Don't have an account?"}
+                        <button type="button" onClick={() => { setIsRegistering(!isRegistering); setError(''); }} className="ml-2 text-indigo-600 font-bold hover:underline">
+                            {isRegistering ? "Sign in securely" : "Create New Account"}
+                        </button>
                     </p>
                 </motion.div>
             </div>

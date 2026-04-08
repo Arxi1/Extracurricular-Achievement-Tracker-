@@ -1,0 +1,8 @@
+﻿
+id studentName rollNumber eve
+                          ntN
+                          ame
+-- ----------- ---------- ---
+                             
+
+

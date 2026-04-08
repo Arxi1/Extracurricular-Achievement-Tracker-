@@ -43,15 +43,26 @@ export default function UploadAchievement() {
         awardType: '',
         date: '',
         description: '',
+        certificateUrl: '',
     });
+
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData({ ...formData, certificateUrl: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const newAchievement = {
             ...formData,
-            id: Math.random().toString(36).substring(2, 9),
-            studentId: user?.id || '',
+            studentId: user?.id || null,
             studentName: user?.name || '',
             rollNumber: user?.rollNumber || '',
             department: user?.department || '',
@@ -188,6 +199,20 @@ export default function UploadAchievement() {
                                         value={formData.description}
                                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     />
+                                </div>
+
+                                <div className="space-y-3 pt-2">
+                                    <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-2 ml-1">
+                                        <Upload className="w-3.5 h-3.5" />
+                                        Evidence / Proof Document
+                                    </Label>
+                                    <Input
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        className="h-14 rounded-[1.5rem] bg-slate-50 border-inline border-slate-200 px-6 py-3 font-medium text-slate-700 focus:ring-4 transition-all cursor-pointer file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                        onChange={handleFileUpload}
+                                    />
+                                    {formData.certificateUrl && <p className="text-xs text-emerald-500 font-bold ml-2">✓ Digital evidence attached securely</p>}
                                 </div>
 
                                 <div className="pt-6">

@@ -1,0 +1,50 @@
+﻿{
+    "value":  [
+                  {
+                      "id":  1,
+                      "name":  "Admin User",
+                      "email":  "admin@achievetrack.com",
+                      "password":  null,
+                      "role":  "admin",
+                      "rollNumber":  null,
+                      "department":  null
+                  },
+                  {
+                      "id":  2,
+                      "name":  "John Doe",
+                      "email":  "john@student.com",
+                      "password":  null,
+                      "role":  "student",
+                      "rollNumber":  "CS2021001",
+                      "department":  "Computer Science"
+                  },
+                  {
+                      "id":  3,
+                      "name":  "Jane Smith",
+                      "email":  "jane@student.com",
+                      "password":  null,
+                      "role":  "student",
+                      "rollNumber":  "EC2021015",
+                      "department":  "Electronics"
+                  },
+                  {
+                      "id":  4,
+                      "name":  "Mike Johnson",
+                      "email":  "mike@student.com",
+                      "password":  null,
+                      "role":  "student",
+                      "rollNumber":  "ME2021032",
+                      "department":  "Mechanical"
+                  },
+                  {
+                      "id":  5,
+                      "name":  "2400031930@kluniversity.in",
+                      "email":  "sairamachandramurthykoppu@gmail.com",
+                      "password":  "12345678",
+                      "role":  "student",
+                      "rollNumber":  "ASDFGH",
+                      "department":  "Electronics"
+                  }
+              ],
+    "Count":  5
+}

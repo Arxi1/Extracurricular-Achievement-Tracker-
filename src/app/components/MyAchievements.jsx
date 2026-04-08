@@ -306,7 +306,21 @@ export default function MyAchievements() {
 
                                 <div className="flex gap-4">
                                     {selectedAchievement.status === 'approved' && (
-                                        <Button className="flex-1 h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-lg shadow-xl shadow-slate-100 gap-3">
+                                        <Button 
+                                            onClick={() => {
+                                                if (!selectedAchievement?.certificateUrl) {
+                                                    toast.error("No official document attached to this record.");
+                                                    return;
+                                                }
+                                                const a = document.createElement('a');
+                                                a.href = selectedAchievement.certificateUrl;
+                                                // Extract extension from base64 if possible
+                                                const isImage = selectedAchievement.certificateUrl.startsWith('data:image/');
+                                                a.download = `Credential_${selectedAchievement.eventName.replace(/\s+/g, '_')}${isImage ? '.jpg' : '.pdf'}`;
+                                                a.click();
+                                                toast.success("Credential downloading securely!");
+                                            }}
+                                            className="flex-1 h-14 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-lg shadow-xl shadow-slate-100 gap-3">
                                             Download Credential
                                             <ExternalLink className="w-5 h-5 text-indigo-400" />
                                         </Button>

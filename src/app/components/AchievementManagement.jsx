@@ -69,9 +69,9 @@ export default function AchievementManagement() {
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
     const filteredAchievements = achievements.filter(achievement => {
-        const matchesSearch = achievement.eventName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            achievement.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            achievement.rollNumber.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (achievement.eventName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (achievement.studentName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (achievement.rollNumber || '').toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = filterCategory === 'all' || achievement.eventCategory === filterCategory;
         const matchesDepartment = filterDepartment === 'all' || achievement.department === filterDepartment;
 
