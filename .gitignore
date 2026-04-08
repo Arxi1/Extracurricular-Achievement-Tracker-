@@ -1,2 +1,11 @@
-backend/
-backend/
+node_modules/
+dist/
+.env
+.DS_Store
+*.local
+.vscode/
+out*.txt
+backend/target/
+backend/.mvn/
+backend/mvnw*
+!backend/
