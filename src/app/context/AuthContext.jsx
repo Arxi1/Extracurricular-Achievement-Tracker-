@@ -2,7 +2,10 @@ import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext(undefined);
 
-const API_BASE_URL = 'http://localhost:8080/api/users';
+import API_BASE_URL from '@/config/api';
+
+const AUTH_API_URL = `${API_BASE_URL}/users`;
+
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
@@ -17,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const res = await fetch(`${API_BASE_URL}/login`, {
+            const res = await fetch(`${AUTH_API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -35,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
-            const res = await fetch(`${API_BASE_URL}/register`, {
+            const res = await fetch(`${AUTH_API_URL}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData)

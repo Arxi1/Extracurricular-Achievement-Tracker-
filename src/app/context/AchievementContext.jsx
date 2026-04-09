@@ -2,7 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AchievementContext = createContext(undefined);
 
-const API_BASE_URL = 'http://localhost:8080/api/achievements';
+import API_BASE_URL from '@/config/api';
+
+const ACHIEVEMENTS_API_URL = `${API_BASE_URL}/achievements`;
+
 
 export function AchievementProvider({ children }) {
     const [achievements, setAchievements] = useState([]);
@@ -13,7 +16,7 @@ export function AchievementProvider({ children }) {
 
     const fetchAchievements = async () => {
         try {
-            const response = await fetch(API_BASE_URL);
+            const response = await fetch(ACHIEVEMENTS_API_URL);
             const data = await response.json();
             // Backend returns date as components if not configured right, but let's assume it returns standard json
             // Sorting to have newest first if not sorted by backend
@@ -25,7 +28,7 @@ export function AchievementProvider({ children }) {
 
     const addAchievement = async (achievement) => {
         try {
-            const response = await fetch(API_BASE_URL, {
+            const response = await fetch(ACHIEVEMENTS_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,7 +44,7 @@ export function AchievementProvider({ children }) {
 
     const updateAchievement = async (id, updates) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/${id}`, {
+            const response = await fetch(`${ACHIEVEMENTS_API_URL}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,7 +62,7 @@ export function AchievementProvider({ children }) {
 
     const deleteAchievement = async (id) => {
         try {
-            await fetch(`${API_BASE_URL}/${id}`, {
+            await fetch(`${ACHIEVEMENTS_API_URL}/${id}`, {
                 method: 'DELETE',
             });
             setAchievements(prev => prev.filter(a => String(a.id) !== String(id)));
