@@ -45,7 +45,7 @@ export default function Login() {
             return;
         }
 
-        if (captcha.userInput !== captcha.code) {
+        if (captcha.userInput.toLowerCase() !== captcha.code.toLowerCase()) {
             setError('Incorrect Captcha code. Please try again.');
             generateCaptcha();
             return;
