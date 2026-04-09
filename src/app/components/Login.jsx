@@ -19,8 +19,7 @@ export default function Login() {
     const [rollNumber, setRollNumber] = useState('');
     const [department, setDepartment] = useState('');
     const [error, setError] = useState('');
-    const [captcha, setCaptcha] = useState({ question: '', answer: 0 });
-    const [userCaptcha, setUserCaptcha] = useState('');
+    const [captcha, setCaptcha] = useState({ code: '', userInput: '' });
     const navigate = useNavigate();
     const { login, register } = useAuth();
 
@@ -29,13 +28,12 @@ export default function Login() {
     }, []);
 
     const generateCaptcha = () => {
-        const num1 = Math.floor(Math.random() * 10) + 1;
-        const num2 = Math.floor(Math.random() * 10) + 1;
-        setCaptcha({
-            question: `What is ${num1} + ${num2}?`,
-            answer: num1 + num2
-        });
-        setUserCaptcha('');
+        const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+            code += chars[Math.floor(Math.random() * chars.length)];
+        }
+        setCaptcha({ code, userInput: '' });
     };
 
     const handleSubmit = async (e) => {
@@ -47,8 +45,8 @@ export default function Login() {
             return;
         }
 
-        if (parseInt(userCaptcha) !== captcha.answer) {
-            setError('Incorrect Captcha answer. Please try again.');
+        if (captcha.userInput !== captcha.code) {
+            setError('Incorrect Captcha code. Please try again.');
             generateCaptcha();
             return;
         }
@@ -229,17 +227,27 @@ export default function Login() {
                                 <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
                                     <Label className="text-sm font-semibold text-slate-700">Security Verification</Label>
                                     <div className="flex items-center gap-4">
-                                        <div className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-center font-bold text-indigo-600 select-none">
-                                            {captcha.question}
+                                        <div 
+                                            className="flex-1 px-4 py-2 bg-gradient-to-r from-slate-100 to-slate-200 border border-slate-300 rounded-lg text-center font-black tracking-[0.3em] text-indigo-700 select-none italic shadow-inner"
+                                            style={{ fontFamily: 'monospace', textDecoration: 'line-through' }}
+                                        >
+                                            {captcha.code}
                                         </div>
                                         <Input
-                                            type="number"
-                                            placeholder="Answer"
-                                            value={userCaptcha}
-                                            onChange={(e) => setUserCaptcha(e.target.value)}
-                                            className="w-24 h-11 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all"
+                                            type="text"
+                                            placeholder="Enter Code"
+                                            value={captcha.userInput}
+                                            onChange={(e) => setCaptcha({...captcha, userInput: e.target.value})}
+                                            className="w-32 h-11 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all uppercase"
                                         />
                                     </div>
+                                    <button 
+                                        type="button" 
+                                        onClick={generateCaptcha}
+                                        className="text-xs font-bold text-indigo-600 hover:text-indigo-500 underline"
+                                    >
+                                        Get New Code
+                                    </button>
                                 </div>
 
                                 <Button type="submit" className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-xl transition-all shadow-lg shadow-indigo-200 hover:scale-[1.01] active:scale-[0.99]">
