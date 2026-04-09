@@ -30,8 +30,9 @@ export const AuthProvider = ({ children }) => {
                 setUser(userData);
                 return true;
             }
+            console.error('Login failed with status:', res.status);
         } catch (err) {
-            console.error('Login failed', err);
+            console.error('Login network error:', err);
         }
         return false;
     };
@@ -48,8 +49,9 @@ export const AuthProvider = ({ children }) => {
                 setUser(newUser);
                 return true;
             }
+            console.error('Registration failed with status:', res.status);
         } catch (err) {
-            console.error('Registration failed', err);
+            console.error('Registration network error:', err);
         }
         return false;
     };
