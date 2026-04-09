@@ -76,32 +76,61 @@ export default function Login() {
         <div className="min-h-screen grid lg:grid-cols-2 overflow-hidden bg-background font-sans">
             {/* Visual Section */}
             <div className="hidden lg:flex flex-col justify-center items-center p-12 bg-indigo-600 relative overflow-hidden">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute inset-0 z-0"
-                >
-                    <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-400/20 rounded-full blur-3xl animate-pulse delay-700" />
-                </motion.div>
-
-                <div className="relative z-10 max-w-md text-center text-white space-y-8">
+                <div className="absolute inset-0 z-0">
                     <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
+                        animate={{
+                            scale: [1, 1.2, 1],
+                            rotate: [0, 90, 0],
+                        }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-white/10 rounded-full blur-3xl"
+                    />
+                    <motion.div
+                        animate={{
+                            scale: [1, 1.3, 1],
+                            x: [0, 50, 0],
+                        }}
+                        transition={{ duration: 15, repeat: Infinity, ease: "linear", delay: 2 }}
+                        className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-400/20 rounded-full blur-3xl"
+                    />
+                </div>
+
+                <div className="relative z-10 max-w-md text-center text-white space-y-12">
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 100 }}
                     >
-                        <div className="inline-flex p-4 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-2xl mb-6">
-                            <Award className="w-16 h-16 text-white" />
+                        <div className="inline-flex p-6 bg-white/10 backdrop-blur-xl rounded-[2.5rem] border border-white/20 shadow-2xl mb-8 relative group">
+                            <div className="absolute inset-0 bg-white/20 rounded-[2.5rem] blur-xl group-hover:blur-2xl transition-all" />
+                            <Award className="w-20 h-20 text-white relative z-10 animate-bounce-slow" />
                         </div>
-                        <h1 className="text-5xl font-bold font-heading tracking-tight leading-tight">
-                            Empower Your <span className="text-indigo-200">Journey</span>
+                        <h1 className="text-6xl font-black font-heading tracking-tighter leading-none mb-6">
+                            Master Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-white">Success</span>
                         </h1>
-                        <p className="text-xl text-indigo-100/80 mt-4 leading-relaxed">
-                            Track, showcase, and celebrate every milestone in your academic career.
+                        <p className="text-xl text-indigo-100 font-medium leading-relaxed opacity-90 px-4">
+                            The elite platform to track, verify, and spotlight your academic excellence.
                         </p>
                     </motion.div>
+
+                    <div className="grid grid-cols-2 gap-6 pt-10">
+                        {[
+                            { label: 'Verified', sub: 'Certificates', icon: ShieldCheck },
+                            { label: 'Real-time', sub: 'Auditing', icon: Sparkles }
+                        ].map((stat, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 + (i * 0.1) }}
+                                className="p-4 bg-white/10 backdrop-blur-md rounded-3xl border border-white/10"
+                            >
+                                <stat.icon className="w-6 h-6 mb-2 mx-auto text-indigo-200" />
+                                <p className="text-lg font-black leading-none mb-1">{stat.label}</p>
+                                <p className="text-[10px] font-bold text-indigo-300 uppercase tracking-widest">{stat.sub}</p>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
@@ -129,7 +158,7 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <Card className="border-none shadow-2xl shadow-indigo-100 bg-white p-2">
+                    <Card className="border-none shadow-2xl shadow-indigo-100/50 bg-white/80 backdrop-blur-xl p-2 rounded-[2rem] border border-white">
                         <CardHeader className="pb-4">
                             <CardTitle className="text-lg font-semibold text-slate-800">
                                 {isRegistering ? 'Sign Up' : 'Sign In'}
