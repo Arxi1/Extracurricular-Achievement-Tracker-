@@ -71,16 +71,6 @@ export default function Login() {
         }
     };
 
-    const fillDemoCredentials = (role) => {
-        setIsRegistering(false);
-        if (role === 'admin') {
-            setEmail('admin@achievetrack.com');
-            setPassword('admin123');
-        } else {
-            setEmail('john@student.com');
-            setPassword('student123');
-        }
-    };
 
     return (
         <div className="min-h-screen grid lg:grid-cols-2 overflow-hidden bg-background font-sans">
@@ -254,19 +244,6 @@ export default function Login() {
                                     {isRegistering ? 'Complete Registration' : 'Continue to Dashboard'}
                                 </Button>
 
-                                {!isRegistering && (
-                                    <>
-                                        <div className="relative py-2">
-                                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div>
-                                            <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 font-bold tracking-wider">Demo Access</span></div>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <Button type="button" variant="outline" className="h-11 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all font-bold" onClick={() => fillDemoCredentials('student')}>Student Demo</Button>
-                                            <Button type="button" variant="outline" className="h-11 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all font-bold" onClick={() => fillDemoCredentials('admin')}>Admin Demo</Button>
-                                        </div>
-                                    </>
-                                )}
                             </form>
                         </CardContent>
                     </Card>
