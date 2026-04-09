@@ -28,7 +28,7 @@ export default function Login() {
     }, []);
 
     const generateCaptcha = () => {
-        const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let code = '';
         for (let i = 0; i < 6; i++) {
             code += chars[Math.floor(Math.random() * chars.length)];
@@ -218,7 +218,7 @@ export default function Login() {
                                     <Label className="text-sm font-semibold text-slate-700">Security Verification</Label>
                                     <div className="flex items-center gap-4">
                                         <div 
-                                            className="flex-1 px-4 py-2 bg-gradient-to-r from-slate-100 to-slate-200 border border-slate-300 rounded-lg text-center font-black tracking-[0.3em] text-indigo-700 select-none italic shadow-inner"
+                                            className="flex-1 px-4 py-2 bg-gradient-to-r from-slate-100 to-slate-200 border border-slate-300 rounded-lg text-center font-black tracking-[0.3em] text-indigo-700 select-none shadow-inner"
                                             style={{ fontFamily: 'monospace', textDecoration: 'line-through' }}
                                         >
                                             {captcha.code}
