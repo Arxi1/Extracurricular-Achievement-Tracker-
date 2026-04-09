@@ -19,8 +19,24 @@ export default function Login() {
     const [rollNumber, setRollNumber] = useState('');
     const [department, setDepartment] = useState('');
     const [error, setError] = useState('');
+    const [captcha, setCaptcha] = useState({ question: '', answer: 0 });
+    const [userCaptcha, setUserCaptcha] = useState('');
     const navigate = useNavigate();
     const { login, register } = useAuth();
+
+    React.useEffect(() => {
+        generateCaptcha();
+    }, []);
+
+    const generateCaptcha = () => {
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        setCaptcha({
+            question: `What is ${num1} + ${num2}?`,
+            answer: num1 + num2
+        });
+        setUserCaptcha('');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,6 +44,12 @@ export default function Login() {
 
         if (!email || !password) {
             setError('Please enter both email and password');
+            return;
+        }
+
+        if (parseInt(userCaptcha) !== captcha.answer) {
+            setError('Incorrect Captcha answer. Please try again.');
+            generateCaptcha();
             return;
         }
 
@@ -47,6 +69,7 @@ export default function Login() {
             navigate('/dashboard');
         } else {
             setError(isRegistering ? 'Registration failed. That email might already be taken.' : 'Invalid credentials. Please try again.');
+            generateCaptcha();
         }
     };
 
@@ -200,6 +223,23 @@ export default function Login() {
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="h-12 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all"
                                     />
+                                </div>
+
+                                {/* Math Captcha */}
+                                <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                    <Label className="text-sm font-semibold text-slate-700">Security Verification</Label>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-center font-bold text-indigo-600 select-none">
+                                            {captcha.question}
+                                        </div>
+                                        <Input
+                                            type="number"
+                                            placeholder="Answer"
+                                            value={userCaptcha}
+                                            onChange={(e) => setUserCaptcha(e.target.value)}
+                                            className="w-24 h-11 border-slate-200 hover:border-indigo-400 focus:ring-4 transition-all"
+                                        />
+                                    </div>
                                 </div>
 
                                 <Button type="submit" className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base rounded-xl transition-all shadow-lg shadow-indigo-200 hover:scale-[1.01] active:scale-[0.99]">
