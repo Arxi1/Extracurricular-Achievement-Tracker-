@@ -125,21 +125,6 @@ export default function DashboardLayout() {
                     })}
                 </nav>
 
-                <div className="p-6">
-                    <div className="p-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-100 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-12 -mt-12 transition-transform group-hover:scale-150 duration-700" />
-                        <div className="relative z-10">
-                            <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl w-fit mb-6 shadow-lg border border-white/20">
-                                <Sparkles className="w-5 h-5 text-indigo-100" />
-                            </div>
-                            <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-2">Pro Feature</p>
-                            <h4 className="text-lg font-black font-heading leading-tight mb-2">Portfolio Export</h4>
-                            <p className="text-xs font-medium leading-relaxed opacity-80">
-                                Generate high-resolution institutional transcripts in one click.
-                            </p>
-                        </div>
-                    </div>
-                </div>
             </motion.aside>
 
             {/* Main Container */}
