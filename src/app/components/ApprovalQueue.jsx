@@ -19,7 +19,8 @@ import {
     SearchCode,
     FileText,
     Sparkles,
-    Database
+    Database,
+    Download
 } from 'lucide-react';
 import { useAchievements } from '../context/AchievementContext';
 import {
@@ -41,6 +42,8 @@ export default function ApprovalQueue() {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [rejectionReason, setRejectionReason] = useState('');
     const [isRejecting, setIsRejecting] = useState(false);
+    const [isEvidenceOpen, setIsEvidenceOpen] = useState(false);
+    const [evidenceUrl, setEvidenceUrl] = useState('');
 
     const pendingAchievements = achievements.filter(a => a.status === 'pending');
 
@@ -173,7 +176,8 @@ export default function ApprovalQueue() {
                                                             className="text-indigo-600 font-bold p-0 gap-1.5 h-fit text-xs uppercase tracking-widest hover:no-underline hover:text-indigo-700"
                                                             onClick={() => {
                                                                 if (achievement.certificateUrl) {
-                                                                    window.open(achievement.certificateUrl, '_blank');
+                                                                    setEvidenceUrl(achievement.certificateUrl);
+                                                                    setIsEvidenceOpen(true);
                                                                 } else {
                                                                     toast.error('No evidence document discovered for this record');
                                                                 }
@@ -319,6 +323,59 @@ export default function ApprovalQueue() {
                                 </Button>
                             )}
                         </DialogFooter>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isEvidenceOpen} onOpenChange={setIsEvidenceOpen}>
+                <DialogContent className="max-w-4xl bg-white/80 backdrop-blur-2xl rounded-[3rem] border-none shadow-[0_0_100px_rgba(0,0,0,0.1)] p-0 overflow-hidden">
+                    <div className="absolute top-6 right-6 z-50">
+                        <Button 
+                            variant="secondary" 
+                            size="icon" 
+                            onClick={() => setIsEvidenceOpen(false)}
+                            className="rounded-full bg-white/50 backdrop-blur-md border-none hover:bg-white shadow-xl"
+                        >
+                            <XCircle className="w-5 h-5 text-slate-800" />
+                        </Button>
+                    </div>
+                    
+                    <div className="p-10 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-2xl font-black font-heading text-slate-900 tracking-tighter">Credential Evidence</h3>
+                                <p className="text-slate-500 font-medium font-sans">Official document provided by the claimant for verification.</p>
+                            </div>
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    const a = document.createElement('a');
+                                    a.href = evidenceUrl;
+                                    a.download = `Evidence_${Date.now()}.png`;
+                                    a.click();
+                                }}
+                                className="rounded-2xl h-12 px-6 border-slate-200 font-bold hover:bg-slate-50 gap-2 shadow-sm"
+                            >
+                                <Download className="w-5 h-5 text-indigo-500" />
+                                Save Copy
+                            </Button>
+                        </div>
+                        
+                        <div className="relative rounded-[2rem] overflow-hidden bg-slate-100/50 border border-slate-200/50 flex items-center justify-center min-h-[400px]">
+                            {evidenceUrl.includes('image/') ? (
+                                <img 
+                                    src={evidenceUrl} 
+                                    alt="Evidence" 
+                                    className="max-w-full max-h-[70vh] object-contain shadow-2xl rounded-xl"
+                                />
+                            ) : (
+                                <div className="text-center p-12">
+                                    <FileText className="w-20 h-20 text-slate-300 mx-auto mb-4" />
+                                    <p className="text-slate-500 font-bold">Document format not supported for direct preview.</p>
+                                    <p className="text-slate-400 text-sm italic">Use 'Save Copy' to view the full file.</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
